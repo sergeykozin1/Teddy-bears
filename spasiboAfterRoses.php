@@ -1,0 +1,372 @@
+<?php
+$imail="mishek-mnogo@ya.ru"; //Email (можно через запятую - email1, email2, email3)
+$tiny_text="спасибо за вашу заявку, мы свяжемся с вами в ближайшее время."; //Благодарность
+$ntimer=""; //Таймер возврата на главную, в секундах - после успешного заказа, по истичению заданного времени заказчика перекинет на главную страницу
+$kod_kod=""; //Скрипты
+?>
+<!DOCTYPE HTML>
+<html style="height: 100%; font-family: 'Lato', Calibri, Arial, sans-serif;">
+<head>
+  <meta http-equiv="content-type" content="text/html" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://use.fontawesome.com/7894f79ab5.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700|Roboto:400,500,700,900" rel="stylesheet"> 
+  <meta name="author" content="smok003" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, user-scalable=false"/>
+  <?=$ntimer > ' ' ? '<meta http-equiv="refresh" content="' . $ntimer . '; url=/">' : ''?>
+
+<?php
+if (isset($_POST['email']) || isset($_POST['tel'])){
+  $message = '';
+  $client = '';
+
+  $post = array(
+    'имя'     => 'Имя: ',           'name'   => 'Имя: ',
+    'tel'     => 'Телефон: ',       'phone'  => 'Телефон: ',       'contact'    => 'Контакты: ',
+    'mail'    => 'Email: ',         'email'  => 'Email: ',
+    /* стандартные доп поля */
+    'notes'   => 'Комментарий: ',   'note'   => 'Комментарий: ',   'comment'    => 'Комментарий: ',
+    'adres'   => 'Адрес: ',         'adress' => 'Адрес: ',         'address'    => 'Адрес: ',         'addr'  => 'Адрес: ',
+    'add'     => 'Дополнительно: ', 'dop'    => 'Дополнительно: ', 'additional' => 'Дополнительно: ',
+    'cena'    => 'Цена: ',          'cost'   => 'Цена: ',          'price'      => 'Стоимость: ',
+    /* свойства обьектов */
+    'size'      => 'Размер: ',      'width'   => 'Ширина: ',     'height'     => 'Высота: ',      'length'  => 'Длинна: ',
+    'color'     => 'Цвет: ',    'format'  => 'Формат: ',
+    'view'      => 'Вид: ',     'kind'    => 'Вид: ',      
+    'weight'    => 'Вес: ',       'veight'  => 'Вес: ',      'wt'     => 'Вес: ',
+    'figure'    => 'Фигура: ',    'shape'   => 'Фигура: ',
+    'structure' => 'Структура: ',   'pattern' => 'Структура: ',    'texture'  => 'Структура: ',
+    'design'    => 'Дизайн: ',    'styling' => 'Дизайн: ',
+    'type'      => 'Тип: ',
+    'forma'     => 'Форма: ',
+    'count'     => 'Количество: '
+  );
+
+  foreach ($_POST as $key => $value) {
+    $message .= ( $post[$key] ? $post[$key] : ($key . ': ') ) . $value . PHP_EOL;
+  }
+
+  $header = 'Content-type: text/plain; charset=UTF-8' . PHP_EOL . 
+            'From: ' . $imail . PHP_EOL . 
+            'MIME-Version: 1.0'. PHP_EOL;
+
+  $title = 'Заказ с сайта ' . $_SERVER['HTTP_HOST'];
+
+  if (!$imail) { ?>
+
+      <title>Ошибка отправки</title>
+    </head>
+    <body>
+      <div style="width:980px;max-width:100%;margin:0 auto;text-align:center;">
+        <h3>
+          Ошибка отправки:<br/>Email не задан, некуда отправить заявку
+        </h3> 
+        вверху файла <strong>spasibo.php</strong> найдите строку <strong>$imail=""</strong> и впишите ваш email в кавычках<br/> пример: <strong>$imail="<b>email@mail.ru</b>"</strong><br/> <br/>
+        <strong>Содержимое заявки:</strong><br/> <?=(preg_replace("/\n/i", "<br>", $message))?>
+      </div>
+      <style>
+        html{background-color: #EAC5C5;} b{color:#f00;}
+      </style>
+    </body>
+    </html>
+
+  <?php die; }
+
+  if (mail($imail, $title, $message, $header) == 1) {
+//Успешная заявка 
+  ?> 
+
+    <section id="s01">
+      <nav id="nav" class="pc_nav">
+      <div class="wrap">
+        <div class="block logo">
+          <p>Много Мишек</p>
+        </div>
+        <div class="block pc7">
+          <p>
+            <i class="fa fa-map-marker"></i>
+            г. Ростов-на-Дону, пр-кт Космонавтов, 32Б
+          </p>
+        </div>
+        <div class="block time">
+          <p>   
+            <i class="fa fa-clock-o"></i>
+            Пн-Вс 9.00-21.00
+          </p>
+        </div>
+        <div class="block tel pc5">
+          <a href="tel:89281317304">8 928 131-73-04</a>
+        </div>
+        <div class="block">
+          <a href="#x" class="btn" onclick="popup(2)">заказать звонок</a>
+        </div>
+      </div>
+    </nav>
+    <nav class="tablet_nav tablet">
+      <div class="wrap">
+        <div class="block">
+          <p>
+            <i class="fa fa-map-marker"></i>
+            г. Ростов-на-Дону, пр-кт Космонавтов, 32Б
+          </p>
+        </div>
+        <div class="block time">
+          <p>   
+            <i class="fa fa-clock-o"></i>
+            Пн-Вс 9.00-21.00
+          </p>
+        </div>
+        <div class="block tel">
+          <i class="fa fa-phone"></i>
+          <a href="tel:89281317304">8 928 131-73-04</a>
+        </div>
+      </div>
+    </nav>
+    <div class="tablet pre_nav">
+      <div class="wrap">
+        <div class="block logo">
+          <p>Много Мишек</p>
+        </div>
+        <div class="block knopka">
+          <a href="#x" class="btn" onclick="popup(2)">заказать звонок</a>
+        </div>
+      </div>
+    </div>
+    <nav class="mob">
+      <div class="wrap">
+        <div class="block logo">
+          <p>Много Мишек</p>
+        </div>
+        <div class="block geo">
+          <p>
+            <i class="fa fa-map-marker"></i>
+            г. Ростов-на-Дону, пр-кт Космонавтов, 32Б
+          </p>
+        </div>
+        <div class="block tel">
+          <i class="fa fa-phone"></i>
+          <a href="tel:89281317304">8 928 131-73-04</a>
+        </div>
+        <div class="block time">
+          <p>   
+            <i class="fa fa-clock-o"></i>
+            Пн-Вс 9.00-21.00
+          </p>
+        </div>
+      </div>
+    </nav>
+    </section>
+    <hr class="devider">
+
+
+    <section id="thank_you">
+      <div class="wrap">
+        <div class="box">
+          <h1><span>Спасибо! Ваш заказ принят.</span></h1>
+          <p class="title">Мы позвоним Вам в течении 15 минут</p>
+          <a href="index.php" class="btn">вернуться к покупке</a>
+          <a href="https://vk.com/mnogo_mishek161" target="_blank" class="more-revs">Присоединяйтесь к нашей группе VK</a>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+
+    <section id="map">
+    <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A4385456e60b60164bd726733155c419db4423876ec7fed9d224f44d2ebb7609f&amp;width=100%&amp;height=340&amp;lang=ru_RU&amp;scroll=true"></script>
+  </section>
+
+
+  <section id="s09">
+    <div class="wrap">
+      <div class="fw">
+        <div class="cc33">
+          <p class="logo">Много Мишек</p>
+          <p>Большие плюшевые медведи <br> в г. Ростове-на-Дону</p>
+        </div>
+        <div class="cc33">
+          <p class="title">О нас</p>
+          <ul>
+            <li>
+              <i class="fa fa-caret-right"></i>
+              <a href="#s02" class="scrollto">Преимущества</a>
+            </li>
+            <li>
+              <i class="fa fa-caret-right"></i>
+              <a href="#s03" class="scrollto">Каталог</a>
+            </li>
+            <li>
+              <i class="fa fa-caret-right"></i>
+              <a href="#s04" class="scrollto">Наш подход к качеству</a>
+            </li>
+            <li>
+              <i class="fa fa-caret-right"></i>
+              <a href="#s05" class="scrollto">Часто задаваемые вопросы</a>
+            </li>
+            <li>
+              <i class="fa fa-caret-right"></i>
+              <a href="#s07" class="scrollto">Отзывы о наших медведях</a>
+            </li>
+          </ul>
+        </div>
+        <div class="cc33">
+          <p class="title">Контакты</p>
+          <ul>
+            <li>
+              <i class="fa fa-map-marker"></i>
+              г. Ростов-на-Дону, пр-кт Космонавтов, 32Б
+            </li>
+            <li>
+              <i class="fa fa-phone"></i>
+              <a href="tel:89281317304">8 928 131-73-04</a>
+            </li>
+            <li>
+              <i class="fa fa-facebook-official"></i>
+              <a href="www.facebook.com/mnogomishek" target="_blank">www.facebook.com/mnogomishek</a>
+            </li>
+            <li>
+              <i class="fa fa-odnoklassniki-square"></i>
+              <a href="www.ok.ru/group/57809037754431" target="_blank">www.ok.ru/group/57809037754431</a>
+            </li>
+            <li>
+              <i class="fa fa-instagram"></i>
+              <a href="www.instagram.com/mnogo_mishek" target="_blank">www.instagram.com/mnogo_mishek</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="mob">
+        <p class="title">Контакты</p>
+        <p class="geo">
+          <i class="fa fa-map-marker"></i>
+          г. Ростов-на-Дону, пр-кт Космонавтов, 32Б
+        </p>
+        <p class="tel">
+          <i class="fa fa-phone"></i>
+          <a href="tel:89281317304">8 928 131-73-04</a>
+        </p>
+        <div class="socials tac">
+          <a href="https://vk.com/mnogo_mishek161" target="_blank"><i class="fa fa-vk"></i></a>
+          <a href="www.ok.ru/group/57809037754431" target="_blank"><i class="fa fa-odnoklassniki-square"></i></a>
+          <a href="www.facebook.com/mnogomishek" target="_blank"><i class="fa fa-facebook-official"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr class="grey"></hr>
+
+  <footer id="footer">
+    <div class="wrap">
+      <p>Все права защищены © 2017 Много мишек</p>
+    </div>
+  </footer>
+
+  <div class="popup-bg" id="popup-bg">
+     <div class="popup" id="popup2">
+          <div class="head">
+              <div class="close" onclick="popup(-1)"><i class="fa fa-times"></i></div>
+              <span>Оставьте заявку и мы свяжемся с вами в ближайшее время</span>
+          </div>
+          <div class="content">
+              <form action="spasibo.php" method="post">
+                <input type="text" name="name"  placeholder="Ваше имя">
+                  <input type="tel" name="tel" required="" placeholder="+7 (___) ___-__-__">
+                  <input type="hidden" name="comment" value="Обратный звонок">
+                  <input type="submit" value="Отправить">
+              </form>
+          </div>    
+      </div>
+  </div>
+  
+
+    <style>
+      #s01{
+        padding-bottom: 0;
+      }
+      #info::first-letter{text-transform: uppercase;}
+    </style> 
+    <script src='assets/js/script.js'></script>
+
+  <?php } else {
+// Ошибка отправки ф-цией mail() 
+  ?>
+
+    <title>Ошибка отправки!</title></head><body>
+      <div class="outer-wrap">
+        <div class="container">
+          <p id="info">Ошибка отправки заказа!<br/><span>Если вы видите это сообщение при попытке оформить заказ - свяжитесь с нами, для уточнения статуса заказа.</span><br /><br /><a href=".">На главную</a></p>
+        </div>
+      </div>
+    <style>
+      html{background-image: linear-gradient(to top, #EAC5C5 0%, #FFF 50%, #EAC5C5 100%); background-color: #EAC5C5;}
+    </style>
+
+  <?php }
+
+} else {
+// Не указан обязательный парамерт отправки (напр. телефон) 
+?>
+
+  <title>Ошибка оформления заказа!</title></head><body>
+    <div class="outer-wrap">
+      <div class="container">
+        <p id="info">Ошибка оформления заказа!<br/><span>Скорее всего, вы просто открыли эту страницу в браузере, вернитесь на главную и попробуйте сделать заказ.</span><br /><br /><a href=".">На главную</a></p>
+      </div>
+    </div>
+  <style>
+    html{background-image: linear-gradient(to top, #F0E7E7 0%, #FFF 50%, #F0E7E7 100%); background-color: #FFE4E4;}
+  </style>
+<?php } ?>
+<!-- метрика, аналитика -->
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter46596048 = new Ya.Metrika({
+                    id:46596048,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true,
+                    trackHash:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/46596048" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<?=$kod_kod?>
+
+<style>
+  #info {font-size: 1em; vertical-align: middle;}
+  #info span {color: gray; font-size:0.8em;}
+  .container{width: 95%;}
+  body{margin: 0;}
+  .container{margin: 0px auto; text-align: center; display: block; bottom: 0%; left: 0%;}
+  .outer-wrap{top: 40%; position: absolute; width:100%;}
+  @media (min-width: 1920px){body{font-size:24px;}}
+  @media (max-width: 1920px){body{font-size:22px;}}
+  @media (max-width: 1366px){body{font-size:20px;}}
+  @media (max-width: 1024px){body{font-size:18px;}}
+</style>
+
+</body>
+</html>
